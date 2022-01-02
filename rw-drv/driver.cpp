@@ -15,7 +15,7 @@
 		NT_VERIFY(NT_SUCCESS(x)); \
 	} while (0)
 
-typedef NTSTATUS (NTAPI* MmCopyVirtualMemory)(
+typedef NTSTATUS(NTAPI* MmCopyVirtualMemory)(
 	PEPROCESS SourceProcess,
 	PVOID SourceAddress,
 	PEPROCESS TargetProcess,
