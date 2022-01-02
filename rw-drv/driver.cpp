@@ -79,7 +79,7 @@ VOID ReadFromAddress(
 	LOG("Reading %d bytes from %p into %p\n",
 		ProcInfo->Length, ProcInfo->Address, ProcInfo->Buffer);
 
-	k_MmCopyVirtualMemory(
+	status = k_MmCopyVirtualMemory(
 		Process, ProcInfo->Address,
 		PsGetCurrentProcess(), ProcInfo->Buffer, ProcInfo->Length,
 		KernelMode, &bytesRead);
