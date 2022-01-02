@@ -1,0 +1,77 @@
+;
+; rw-drv.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=System ; TODO: specify appropriate Class
+ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318} ; TODO: specify appropriate ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=rw-drv.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+PnpLockdown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+rw-drv_Device_CoInstaller_CopyFiles = 11
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+rw-drv.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%rw-drv.DeviceDesc%=rw-drv_Device, Root\rw-drv ; TODO: edit hw-id
+
+[rw-drv_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+rw-drv.sys
+
+;-------------- Service installation
+[rw-drv_Device.NT.Services]
+AddService = rw-drv,%SPSVCINST_ASSOCSERVICE%, rw-drv_Service_Inst
+
+; -------------- rw-drv driver install sections
+[rw-drv_Service_Inst]
+DisplayName    = %rw-drv.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\rw-drv.sys
+
+;
+;--- rw-drv_Device Coinstaller installation ------
+;
+
+[rw-drv_Device.NT.CoInstallers]
+AddReg=rw-drv_Device_CoInstaller_AddReg
+CopyFiles=rw-drv_Device_CoInstaller_CopyFiles
+
+[rw-drv_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[rw-drv_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[rw-drv_Device.NT.Wdf]
+KmdfService =  rw-drv, rw-drv_wdfsect
+[rw-drv_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+DiskName = "rw-drv Installation Disk"
+rw-drv.DeviceDesc = "rw-drv Device"
+rw-drv.SVCDESC = "rw-drv Service"
